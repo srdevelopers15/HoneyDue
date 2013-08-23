@@ -10,6 +10,7 @@
 
 @interface BoundCell : UITableViewCell
 @property (strong, nonatomic) IBOutlet UIImageView *priorityImageView;
+@property (strong, nonatomic) IBOutlet UIImageView *avatarImageView;
 @property (strong, nonatomic) IBOutlet UILabel *nameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *msgLabel;
 @property (strong, nonatomic) IBOutlet UIImageView *unreadFlagImageView;

@@ -7,6 +7,7 @@
 //
 
 #import "BoundCell.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation BoundCell
 

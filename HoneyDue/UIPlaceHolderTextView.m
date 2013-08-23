@@ -10,7 +10,7 @@
 
 @interface UIPlaceHolderTextView ()
 
-@property (nonatomic, retain) UILabel *placeHolderLabel;
+@property (nonatomic, strong) UILabel *placeHolderLabel;
 
 @end
 

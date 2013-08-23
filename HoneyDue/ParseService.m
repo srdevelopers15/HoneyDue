@@ -26,28 +26,69 @@
 }
 
 
--(void)getAllBundles:(void (^)(NSError *, NSArray *))completion{
-    PFQuery *query = [PFQuery queryWithClassName:@"stores"];
+-(void)getAllBundlesByOwnerName:(NSString *)name completion:(void (^)(NSError *, NSArray *))completion{
+    NSLog(@"start to retrieve bundles.");
+    PFQuery *query = [PFQuery queryWithClassName:@"bundle"];
     query.limit = 1000;
-    [query includeKey:@"stores"];
+    //[query includeKey:name];
+    [query whereKey:@"ownerName" equalTo:name];
     [query findObjectsInBackgroundWithBlock:^(NSArray *bundles, NSError *pfError) {
-        if (!pfError) {
-            NSLog(@"Successfully retrieved %d stores.", bundles.count);
-            NSMutableArray *storesForReturn = [[NSMutableArray alloc]init];
+        if (!pfError && bundles.count > 0) {
+            NSLog(@"Successfully retrieved %d bundles.", bundles.count);
+            NSMutableArray *bundlesForReturn = [[NSMutableArray alloc]init];
+                for (PFObject *aBundle in bundles) {
+                    Bundle *bundle = [[Bundle alloc]init];
+                    NSLog(@"get object id: %@", [aBundle objectId]);
+                    [bundle setObjectId:[aBundle objectId]];
+                    [bundle setOwnerName:[aBundle objectForKey:@"ownerName"]];
+                    [bundle setMsg:[aBundle objectForKey:@"msg"]];
+                    NSLog(@"get url from parse %@", [aBundle objectForKey:@"avatarUrl"]);
+                    [bundle setAvatarUrl:[aBundle objectForKey:@"avatarUrl"]];
+                    [bundle setDate:[aBundle objectForKey:@"date"]];
+                    [bundle setTime:[aBundle objectForKey:@"time"]];
+                    [bundle setDueDate:[aBundle objectForKey:@"dueDate"]];
+                    [bundle setReminders:[aBundle objectForKey:@"reminders"]];
+                    [bundle setNotes:[aBundle objectForKey:@"notes"]];
+                    [bundle setContacts:[aBundle objectForKey:@"contacts"]];
+                    [bundle setUnformattedDueDate:[aBundle objectForKey:@"unformattedDueDate"]];
+                    [bundlesForReturn addObject:bundle];
+                }
+            completion(nil,bundlesForReturn);
+            
+        } else {
+            NSLog(@"Error: %@ %@", pfError, [pfError userInfo]);
+            completion(pfError,nil);
+        }
+    }];
+}
+
+-(void)getAllBundlesByReceiver:(NSString *)name completion:(void (^)(NSError *, NSArray *))completion{
+    NSLog(@"start to retrieve bundles.");
+    PFQuery *query = [PFQuery queryWithClassName:@"bundle"];
+    query.limit = 1000;
+    //[query includeKey:name];
+    [query whereKey:@"receiver" equalTo:name];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *bundles, NSError *pfError) {
+        if (!pfError && bundles.count > 0) {
+            NSLog(@"Successfully retrieved %d bundles.", bundles.count);
+            NSMutableArray *bundlesForReturn = [[NSMutableArray alloc]init];
             for (PFObject *aBundle in bundles) {
                 Bundle *bundle = [[Bundle alloc]init];
+                [bundle setObjectId:[aBundle objectForKey:@"objectId"]];
                 [bundle setOwnerName:[aBundle objectForKey:@"ownerName"]];
                 [bundle setMsg:[aBundle objectForKey:@"msg"]];
-                PFFile *imageFile = [aBundle objectForKey:@"ownerAvatar"];
-                [imageFile getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-                    if (!error) {
-                        UIImage *image = [UIImage imageWithData:data];
-                        [bundle setOwnerAvatarImage:image];
-                    }
-                }];
-                [storesForReturn addObject:bundle];
+                NSLog(@"get url from parse %@", [aBundle objectForKey:@"avatarUrl"]);
+                [bundle setAvatarUrl:[aBundle objectForKey:@"avatarUrl"]];
+                [bundle setDate:[aBundle objectForKey:@"date"]];
+                [bundle setTime:[aBundle objectForKey:@"time"]];
+                [bundle setDueDate:[aBundle objectForKey:@"dueDate"]];
+                [bundle setReminders:[aBundle objectForKey:@"reminders"]];
+                [bundle setNotes:[aBundle objectForKey:@"notes"]];
+                [bundle setContacts:[aBundle objectForKey:@"contacts"]];
+                [bundle setUnformattedDueDate:[aBundle objectForKey:@"unformattedDueDate"]];
+                [bundlesForReturn addObject:bundle];
             }
-            completion(nil,storesForReturn);
+            completion(nil,bundlesForReturn);
             
         } else {
             NSLog(@"Error: %@ %@", pfError, [pfError userInfo]);

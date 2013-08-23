@@ -11,5 +11,6 @@
 
 @interface ParseService : NSObject
 +(ParseService *)sharedParseService;
--(void)getAllBundles:(void (^)(NSError *error, NSArray *stores))completion;
+-(void)getAllBundlesByOwnerName:(NSString *)name completion:(void (^)(NSError *error, NSArray *stores))completion;
+-(void)getAllBundlesByReceiver:(NSString *)name completion:(void (^)(NSError *error, NSArray *stores))completion;
 @end
