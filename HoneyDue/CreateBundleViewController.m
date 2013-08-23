@@ -131,7 +131,6 @@
         query.limit = 1000;
         [query whereKey:@"displayName" equalTo:receiverTextField.text];
         [query countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
-            NSLog(@"query number %d", number);
             [self.spinner stopAnimating];
             // use the number
             if (!error) {

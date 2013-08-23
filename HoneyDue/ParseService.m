@@ -38,11 +38,9 @@
             NSMutableArray *bundlesForReturn = [[NSMutableArray alloc]init];
                 for (PFObject *aBundle in bundles) {
                     Bundle *bundle = [[Bundle alloc]init];
-                    NSLog(@"get object id: %@", [aBundle objectId]);
                     [bundle setObjectId:[aBundle objectId]];
                     [bundle setOwnerName:[aBundle objectForKey:@"ownerName"]];
                     [bundle setMsg:[aBundle objectForKey:@"msg"]];
-                    NSLog(@"get url from parse %@", [aBundle objectForKey:@"avatarUrl"]);
                     [bundle setAvatarUrl:[aBundle objectForKey:@"avatarUrl"]];
                     [bundle setDate:[aBundle objectForKey:@"date"]];
                     [bundle setTime:[aBundle objectForKey:@"time"]];
@@ -77,7 +75,6 @@
                 [bundle setObjectId:[aBundle objectForKey:@"objectId"]];
                 [bundle setOwnerName:[aBundle objectForKey:@"ownerName"]];
                 [bundle setMsg:[aBundle objectForKey:@"msg"]];
-                NSLog(@"get url from parse %@", [aBundle objectForKey:@"avatarUrl"]);
                 [bundle setAvatarUrl:[aBundle objectForKey:@"avatarUrl"]];
                 [bundle setDate:[aBundle objectForKey:@"date"]];
                 [bundle setTime:[aBundle objectForKey:@"time"]];

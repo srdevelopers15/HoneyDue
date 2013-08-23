@@ -69,15 +69,16 @@
 
 - (IBAction)signInWithTW:(id)sender {
     [PFTwitterUtils logInWithBlock:^(PFUser *user, NSError *error) {
+        NSLog(@"twitter email: %@", user.email);
         if (!user) {
             NSLog(@"Uh oh. The user cancelled the Twitter login.");
             return;
         } else if (user.isNew) {
             NSLog(@"User signed up and logged in with Twitter!");
-            [self requestAndSaveTWUserInfo];
+            [self requestAndSaveTWUserInfo:user];
         } else {
             NSLog(@"User logged in with Twitter!");
-            [self requestAndSaveTWUserInfo];
+            [self requestAndSaveTWUserInfo:user];
         }     
     }];
 }
@@ -99,54 +100,53 @@
                 NSString *facebookID = userData[@"id"];
                 NSString *name = userData[@"name"];
                 NSString *email = userData[@"email"];
+                NSLog(@"email: %@", email);
                 NSLog(@"facebook name: %@", name);
                 NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large&return_ssl_resources=1", facebookID]];
                 NSString *urlString = [url absoluteString];
-                NSLog(@"facebook avatar url: %@", urlString);
                 [[PFUser currentUser] setObject:name forKey:@"displayName"];
                 [[PFUser currentUser] setObject:urlString forKey:@"avatarUrl"];
                 [[PFUser currentUser] setObject:email forKey:@"email"];
                 [[PFUser currentUser] saveInBackground];
                 [self registerUserForPushNotification:name];
-                [self saveNameToUserDefaults:name pictureURL:urlString];
+                [self saveNameToUserDefaults:name pictureURL:urlString email:email];
                 [self performSegueWithIdentifier:@"GoToHomePage" sender:self];
             }
         }];
 
 }
 
-- (void)requestAndSaveTWUserInfo {
+- (void)requestAndSaveTWUserInfo:(PFUser *)user {
     NSLog(@"start to retrieve twitter info");
     NSString *name = [PFTwitterUtils twitter].screenName;
+    NSString *userId = [PFTwitterUtils twitter].userId;
     NSLog(@"twitter name: %@", name);
-    NSString * strPictureURL = [NSString stringWithFormat:@"https://api.twitter.com/1.1/users/profile_image?screen_name=%@&size=bigger",name];
-    NSURL *url = [NSURL URLWithString:@"http://api.twitter.com/1.1/users/show.json"];
+    // TODO find a way to fetch details with Twitter..
+    NSString * requestString = [NSString stringWithFormat:@"https://api.twitter.com/1.1/users/show.json?screen_name=%@", user.username];
     
-    NSDictionary *params = [NSDictionary dictionaryWithObject:name
-                                                       forKey:@"screen_name"];
-    TWRequest *request = [[TWRequest alloc] initWithURL:url
-                                             parameters:params
-                                          requestMethod:TWRequestMethodGET];
+    NSURL *verify = [NSURL URLWithString:requestString];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:verify];
+    [[PFTwitterUtils twitter] signRequest:request];
+    NSURLResponse *response = nil;
+    NSError *error = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request
+                                         returningResponse:&response
+                                                     error:&error];
     
-    [request performRequestWithHandler:
-     ^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-         if (responseData) {
-             NSLog(@"get response from twitter");
-             NSDictionary *user =
-             [NSJSONSerialization JSONObjectWithData:responseData
-                                             options:NSJSONReadingAllowFragments
-                                               error:NULL];
-             
-             NSString *avatarUrl = [user objectForKey:@"profile_image_url"];
-             NSLog(@"avatar url: %@", avatarUrl);
-             [[PFUser currentUser] setObject:name forKey:@"displayName"];
-             [[PFUser currentUser] setObject:avatarUrl forKey:@"avatarUrl"];
-             [[PFUser currentUser] saveInBackground];
-             [self registerUserForPushNotification:name];
-             [self saveNameToUserDefaults:name pictureURL:avatarUrl];
-             [self performSegueWithIdentifier:@"GoToHomePage" sender:self];
+    if ( error == nil){
+        NSDictionary* result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        NSLog(@"%@",result);
+        NSString *avatarUrl = [result objectForKey:@"profile_image_url_https"];
+        NSLog(@"avatar url: %@", avatarUrl);
+        [[PFUser currentUser] setObject:name forKey:@"displayName"];
+        if (avatarUrl) {
+            [[PFUser currentUser] setObject:avatarUrl forKey:@"avatarUrl"];
         }
-     }];
+        [[PFUser currentUser] saveInBackground];
+        [self registerUserForPushNotification:name];
+        [self saveNameToUserDefaults:name pictureURL:avatarUrl email:@""];
+        [self performSegueWithIdentifier:@"GoToHomePage" sender:self];
+    }
 }
 
 -(void)registerUserForPushNotification:(NSString *)name {
@@ -157,11 +157,11 @@
     [currentInstallation saveInBackground];
 }
 
--(void)saveNameToUserDefaults:(NSString *)name pictureURL:(NSString *)url{
-    NSLog(@"save info to defaults");
+-(void)saveNameToUserDefaults:(NSString *)name pictureURL:(NSString *)url email:(NSString *)email{
     NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
         [standardUserDefaults setObject:name forKey:@"user_name"];
         [standardUserDefaults setObject:url forKey:@"user_picture_url"];
+    [standardUserDefaults setObject:email forKey:@"email"];
         [standardUserDefaults synchronize];
 }
 @end

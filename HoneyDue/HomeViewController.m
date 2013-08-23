@@ -220,8 +220,6 @@
     cell.msgLabel.text = bundle.msg;
     cell.dateLabel.text = bundle.date;
     if (bundle.avatarUrl) {
-        //[cell.avatarImageView setImage:bundle.ownerAvatarImage];
-        NSLog(@"cell's avatar url: %@", bundle.avatarUrl);
         [cell.avatarImageView setImageWithURL:[NSURL URLWithString:bundle.avatarUrl]
                        placeholderImage:[UIImage imageNamed:@"default_profile_pic.png"]];
     }

@@ -173,7 +173,6 @@
 
 - (IBAction) handleSwitch:(id) sender {
     UISwitch *onoff = (UISwitch *) sender;
-    NSLog(@"switch %d :%@", onoff.tag, onoff.on ? @"On" : @"Off");
     [acceptedStateArray replaceObjectAtIndex:onoff.tag withObject:[NSNumber numberWithBool:onoff.on]];
     NSDictionary *originDictionary = [tableDataSourceArray objectAtIndex:onoff.tag];
     if ([@"reminder" isEqualToString:[originDictionary objectForKey:@"type"]]) {

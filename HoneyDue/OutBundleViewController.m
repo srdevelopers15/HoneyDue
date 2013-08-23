@@ -115,7 +115,6 @@
 #pragma mark - UITableView Delegate
 - (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSLog(@"out cell count: %d", tableDataSourceArray.count);
     return tableDataSourceArray.count;
 }
 

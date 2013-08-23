@@ -120,8 +120,8 @@
                     </view>
                     <connections>
                         <outlet property="accountView" destination="05h-24-8Tu" id="IeO-xB-o4C"/>
-                        <outlet property="fullNameLabel" destination="IRW-Jq-atM" id="ovs-5D-8TZ"/>
-                        <outlet property="userNameLabel" destination="I8e-hB-8wz" id="4u5-Kc-QAC"/>
+                        <outlet property="emailLabel" destination="I8e-hB-8wz" id="sM9-Ug-pW6"/>
+                        <outlet property="userNameLabel" destination="IRW-Jq-atM" id="QYa-AD-aHG"/>
                         <segue destination="gEq-6v-drW" kind="modal" identifier="LogOut" id="slm-F2-1CI"/>
                     </connections>
                 </viewController>
@@ -552,7 +552,6 @@
                                         </state>
                                         <connections>
                                             <action selector="done:" destination="uLs-q9-Ae1" eventType="touchUpInside" id="2SK-G8-Rld"/>
-                                            <action selector="done:" destination="dj3-Cr-O3e" eventType="touchUpInside" id="Xnc-V7-o7c"/>
                                             <action selector="done:" destination="rin-dY-Bxq" eventType="touchUpInside" id="pIg-Dg-hhx"/>
                                         </connections>
                                     </button>
@@ -628,7 +627,6 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="done:" destination="dj3-Cr-O3e" eventType="touchUpInside" id="Tj3-wG-eBl"/>
                                             <action selector="done:" destination="rin-dY-Bxq" eventType="touchUpInside" id="tGl-kp-eIq"/>
                                         </connections>
                                     </button>
@@ -724,79 +722,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DPj-YE-o43" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-153" y="-1373"/>
-        </scene>
-        <!--Contacts View Controller-->
-        <scene sceneID="HsI-er-8Mh">
-            <objects>
-                <viewController id="dj3-Cr-O3e" customClass="ContactsViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="j2l-Ie-TFo">
-                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" id="EBf-1v-MNn">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Add Contact" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="EeI-If-8Eo">
-                                        <rect key="frame" x="109" y="14" width="102" height="21"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="JbI-Iu-q9E">
-                                        <rect key="frame" x="9" y="9" width="60" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
-                                        <state key="normal" title="Cancel">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <state key="highlighted">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="cancel:" destination="dj3-Cr-O3e" eventType="touchUpInside" id="9a0-2j-u8R"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="TuJ-xl-u59">
-                                        <rect key="frame" x="254" y="9" width="60" height="32"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
-                                        <state key="normal" title="Done">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <state key="highlighted">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="done:" destination="dj3-Cr-O3e" eventType="touchUpInside" id="mBo-TF-KDV"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" red="0.42352941179999998" green="0.74509803919999995" blue="0.70588235290000001" alpha="1" colorSpace="calibratedRGB"/>
-                            </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="kX8-Q3-Hsv">
-                                <rect key="frame" x="0.0" y="50" width="320" height="498"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="dj3-Cr-O3e" id="Ubg-gb-9i1"/>
-                                    <outlet property="delegate" destination="dj3-Cr-O3e" id="owX-By-ZFQ"/>
-                                </connections>
-                            </tableView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                    <connections>
-                        <outlet property="cancelBtn" destination="JbI-Iu-q9E" id="kmb-uS-Nzf"/>
-                        <outlet property="doneBtn" destination="TuJ-xl-u59" id="5x1-Vm-c0X"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="0Ny-6k-Fwm" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="332" y="-1373"/>
         </scene>
         <!--Create Bundle View Controller-->
         <scene sceneID="jEa-AW-wuF">
@@ -1031,7 +956,6 @@
                         <outlet property="noteBtn" destination="mCO-P9-gZF" id="Ehk-to-SND"/>
                         <outlet property="noteBtnLabel" destination="ra4-Bk-mb7" id="hRW-L8-T80"/>
                         <outlet property="receiverTextField" destination="Ac8-fu-dLj" id="1wG-Vj-FmB"/>
-                        <segue destination="dj3-Cr-O3e" kind="modal" identifier="AddContact" id="deA-ax-zWu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y5Y-D4-y4B" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface UnlinkAccountViewController : UIViewController
-@property (strong, nonatomic) IBOutlet UILabel *fullNameLabel;
 @property (strong, nonatomic) IBOutlet UILabel *userNameLabel;
+@property (strong, nonatomic) IBOutlet UILabel *emailLabel;
 @property (strong, nonatomic) IBOutlet UIView *accountView;
 
 - (IBAction)unlinkAccount:(id)sender;

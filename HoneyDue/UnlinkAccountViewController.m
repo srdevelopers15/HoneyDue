@@ -15,8 +15,8 @@
 @end
 
 @implementation UnlinkAccountViewController
-@synthesize fullNameLabel;
 @synthesize userNameLabel;
+@synthesize emailLabel;
 @synthesize accountView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -36,8 +36,8 @@
     [accountView.layer setMasksToBounds:YES];
     NSString *userName = [[NSUserDefaults standardUserDefaults] objectForKey:@"user_name"];
     NSString *email = [[NSUserDefaults standardUserDefaults] objectForKey:@"email"];
-    fullNameLabel.text = userName;
-    userNameLabel.text = email;
+    userNameLabel.text = userName;
+    emailLabel.text = email;
 }
 
 - (void)didReceiveMemoryWarning

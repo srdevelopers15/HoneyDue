@@ -81,7 +81,6 @@
 		0857A65D17ABA02E0015B071 /* IASKTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 0857A64F17ABA02E0015B071 /* IASKTextField.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		0857A65F17ABA10B0015B071 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0857A65E17ABA10B0015B071 /* MessageUI.framework */; };
 		0857A66117ABA5190015B071 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0857A66017ABA5190015B071 /* Settings.bundle */; };
-		088033B417A213D4009ABA28 /* ContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 088033B317A213D4009ABA28 /* ContactsViewController.m */; };
 		08822E6217826EB60050E7FA /* facebook_sign_in_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 08822E5E17826EB60050E7FA /* facebook_sign_in_btn.png */; };
 		08822E6317826EB60050E7FA /* linkedin_sign_in_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 08822E5F17826EB60050E7FA /* linkedin_sign_in_btn.png */; };
 		08822E6417826EB60050E7FA /* twitter_sign_in_btn.png in Resources */ = {isa = PBXBuildFile; fileRef = 08822E6017826EB60050E7FA /* twitter_sign_in_btn.png */; };
@@ -262,8 +261,6 @@
 		0876D30D17831B7400E8722A /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		0876D30E17831B7400E8722A /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		0876D31217831D1F00E8722A /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
-		088033B217A213D4009ABA28 /* ContactsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactsViewController.h; sourceTree = "<group>"; };
-		088033B317A213D4009ABA28 /* ContactsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactsViewController.m; sourceTree = "<group>"; };
 		08822E5E17826EB60050E7FA /* facebook_sign_in_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = facebook_sign_in_btn.png; sourceTree = "<group>"; };
 		08822E5F17826EB60050E7FA /* linkedin_sign_in_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = linkedin_sign_in_btn.png; sourceTree = "<group>"; };
 		08822E6017826EB60050E7FA /* twitter_sign_in_btn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twitter_sign_in_btn.png; sourceTree = "<group>"; };
@@ -570,8 +567,6 @@
 		0839F28A178A672D0064D8B6 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				088033B217A213D4009ABA28 /* ContactsViewController.h */,
-				088033B317A213D4009ABA28 /* ContactsViewController.m */,
 				0839F28C178A67A90064D8B6 /* CreateBundleViewController.h */,
 				0839F28D178A67A90064D8B6 /* CreateBundleViewController.m */,
 				0809E12D17817F4700B2859C /* HomeViewController.h */,
@@ -925,7 +920,6 @@
 				08104C50179C336300E59D7D /* UIImage+MultiFormat.m in Sources */,
 				08104C51179C336300E59D7D /* UIImage+WebP.m in Sources */,
 				08104C52179C336300E59D7D /* UIImageView+WebCache.m in Sources */,
-				088033B417A213D4009ABA28 /* ContactsViewController.m in Sources */,
 				088B24F217A65EA700CCC56D /* Person.m in Sources */,
 				08E9A6AC17A7B85D00A26919 /* AssetCell.m in Sources */,
 				0857A65017ABA02E0015B071 /* IASKAppSettingsViewController.m in Sources */,
@@ -1042,7 +1036,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HoneyDue/HoneyDue-Prefix.pch";
 				INFOPLIST_FILE = "HoneyDue/HoneyDue-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "7C4739EC-9D93-4AC4-89A3-FADC5E8FD9CF";
@@ -1064,7 +1058,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "HoneyDue/HoneyDue-Prefix.pch";
 				INFOPLIST_FILE = "HoneyDue/HoneyDue-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "7C4739EC-9D93-4AC4-89A3-FADC5E8FD9CF";
