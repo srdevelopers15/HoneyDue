@@ -109,9 +109,6 @@
                 CFRelease(person);
             }
             ABAddressBookSave(book, NULL);
-            //CFRelease(vCardPeople);
-            //CFRelease(defaultSource);
-            //CFRelease(book);
         }
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert" message:@"All items saved successfully." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];

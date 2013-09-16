@@ -27,7 +27,30 @@
      UIRemoteNotificationTypeBadge |
      UIRemoteNotificationTypeAlert |
      UIRemoteNotificationTypeSound];
+    [self downloadHoneyDueUsers];
     return YES;
+}
+
+- (void)downloadHoneyDueUsers {
+    self.honeyDueUsers = [[NSMutableArray alloc] init];
+    PFQuery *userQuery = [PFUser query];
+    [userQuery findObjectsInBackgroundWithBlock:^(NSArray *results, NSError *error) {
+        if (!error && results.count > 0) {
+            NSLog(@"get %d users", results.count);
+            for (PFUser *user in results) {
+                NSString *displayName = [user objectForKey:@"displayName"];
+                NSString *email = [user objectForKey:@"email"];
+                NSArray *autoAcceptCals = [user objectForKey:@"autoAcceptCalendars"];
+                NSArray *autoAcceptContacts = [user objectForKey:@"autoAcceptContacts"];
+                NSArray *autoAcceptReminders = [user objectForKey:@"autoAcceptReminders"];
+                NSLog(@"objectId: %@, name: %@, email: %@", user.objectId, displayName, email);
+                NSDictionary *userDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:user.objectId, @"objectId", displayName, @"displayName",  email, @"email", autoAcceptCals, @"autoAcceptCalendars", autoAcceptContacts, @"autoAcceptContacts", autoAcceptReminders, @"autoAcceptReminders", nil];
+                [self.honeyDueUsers addObject:userDictionary];
+            }
+        } else {
+            
+        }
+    }];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url

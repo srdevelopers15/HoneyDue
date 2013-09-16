@@ -16,12 +16,6 @@
 #import "UIImageView+WebCache.h"
 #import <Parse/Parse.h>
 
-#ifdef USES_IASK_STATIC_LIBRARY
-#import "InAppSettingsKit/IASKSettingsReader.h"
-#else
-#import "IASKSettingsReader.h"
-#endif
-
 @interface HomeViewController () <UIScrollViewDelegate, PullTableViewDelegate, UITableViewDataSource>
 
 @end
@@ -30,17 +24,6 @@
 @synthesize boundScrollView;
 @synthesize boundPageControl;
 @synthesize pullTableView;
-@synthesize appSettingsViewController;
-
-- (IASKAppSettingsViewController*)appSettingsViewController {
-	if (!appSettingsViewController) {
-		appSettingsViewController = [[IASKAppSettingsViewController alloc] init];
-		appSettingsViewController.delegate = self;
-		BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"AutoConnect"];
-		appSettingsViewController.hiddenKeys = enabled ? nil : [NSSet setWithObjects:@"AutoConnectLogin", @"AutoConnectPassword", nil];
-	}
-	return appSettingsViewController;
-}
 
 - (void)viewDidLoad
 {
@@ -310,76 +293,4 @@
     [self performSelector:@selector(loadMoreDataToTable) withObject:nil afterDelay:3.0f];
 }
 
-#pragma mark -
-#pragma mark IASKAppSettingsViewControllerDelegate protocol
-- (void)settingsViewControllerDidEnd:(IASKAppSettingsViewController*)sender {
-    [self dismissModalViewControllerAnimated:YES];
-	
-	// your code here to reconfigure the app for changed settings
-}
-
-// optional delegate method for handling mail sending result
-- (void)settingsViewController:(id<IASKViewController>)settingsViewController mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
-    
-    if ( error != nil ) {
-        // handle error here
-    }
-    
-    if ( result == MFMailComposeResultSent ) {
-        // your code here to handle this result
-    }
-    else if ( result == MFMailComposeResultCancelled ) {
-        // ...
-    }
-    else if ( result == MFMailComposeResultSaved ) {
-        // ...
-    }
-    else if ( result == MFMailComposeResultFailed ) {
-        // ...
-    }
-}
-- (CGFloat)settingsViewController:(id<IASKViewController>)settingsViewController
-                        tableView:(UITableView *)tableView
-        heightForHeaderForSection:(NSInteger)section {
-    NSString* key = [settingsViewController.settingsReader keyForSection:section];
-	if ([key isEqualToString:@"IASKLogo"]) {
-		return [UIImage imageNamed:@"Icon.png"].size.height + 25;
-	} else if ([key isEqualToString:@"IASKCustomHeaderStyle"]) {
-		return 55.f;
-    }
-	return 0;
-}
-
-- (UIView *)settingsViewController:(id<IASKViewController>)settingsViewController
-                         tableView:(UITableView *)tableView
-           viewForHeaderForSection:(NSInteger)section {
-    NSString* key = [settingsViewController.settingsReader keyForSection:section];
-	if ([key isEqualToString:@"IASKLogo"]) {
-		UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Icon.png"]];
-		imageView.contentMode = UIViewContentModeCenter;
-		return imageView;
-	} else if ([key isEqualToString:@"IASKCustomHeaderStyle"]) {
-        UILabel* label = [[UILabel alloc] initWithFrame:CGRectZero];
-        label.backgroundColor = [UIColor clearColor];
-        label.textAlignment = UITextAlignmentCenter;
-        label.textColor = [UIColor redColor];
-        label.shadowColor = [UIColor whiteColor];
-        label.shadowOffset = CGSizeMake(0, 1);
-        label.numberOfLines = 0;
-        label.font = [UIFont boldSystemFontOfSize:16.f];
-        
-        //figure out the title from settingsbundle
-        label.text = [settingsViewController.settingsReader titleForSection:section];
-        
-        return label;
-    }
-	return nil;
-}
-
-- (CGFloat)tableView:(UITableView*)tableView heightForSpecifier:(IASKSpecifier*)specifier {
-	if ([specifier.key isEqualToString:@"customCell"]) {
-		return 44*3;
-	}
-	return 0;
-}
 @end

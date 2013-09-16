@@ -28,6 +28,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *dateBtn;
 @property (strong, nonatomic) IBOutlet UIView *dueDateView;
 @property (strong, nonatomic) IBOutlet UILabel *dueDateLabel;
+@property (strong, nonatomic) IBOutlet UIButton *receiverBtn;
 
 - (IBAction)back:(id)sender;
 - (IBAction)send:(id)sender;
@@ -35,6 +36,7 @@
 - (IBAction)reminderClicked:(id)sender;
 - (IBAction)contactClicked:(id)sender;
 - (IBAction)noteClicked:(id)sender;
+- (IBAction)selectReceiver:(id)sender;
 
 @property (nonatomic, strong) AbstractActionSheetPicker *actionSheetPicker;
 @property (nonatomic, strong) NSDate *selectedDate;

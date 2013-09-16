@@ -8,15 +8,11 @@
 
 #import <UIKit/UIKit.h>
 // Import the two next necessary libraries in the ViewController.h file.
-#import <AddressBook/AddressBook.h>
-#import <AddressBookUI/AddressBookUI.h>
 
-@interface AutoListViewController : UIViewController <ABPeoplePickerNavigationControllerDelegate>
+@interface AutoListViewController : UIViewController
 @property (strong, nonatomic) IBOutlet UIButton *doneBtn;
 @property (strong, nonatomic) IBOutlet UITableView *autoListTableView;
 
 - (IBAction)back:(id)sender;
 - (IBAction)done:(id)sender;
-
-@property (nonatomic, retain) ABPeoplePickerNavigationController *contacts;
 @end

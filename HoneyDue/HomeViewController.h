@@ -9,18 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "PullTableView.h"
 
-#if USES_IASK_STATIC_LIBRARY
-#import "InAppSettingsKit/IASKAppSettingsViewController.h"
-#else
-#import "IASKAppSettingsViewController.h"
-#endif
-
 @interface HomeViewController : UIViewController {
     int currentPageNum;
     NSString *userName;
-    IASKAppSettingsViewController *appSettingsViewController;
 }
-@property (nonatomic, retain) IASKAppSettingsViewController *appSettingsViewController;
 @property (strong, nonatomic) IBOutlet UIScrollView *boundScrollView;
 @property (strong, nonatomic) IBOutlet UIPageControl *boundPageControl;
 @property (strong, nonatomic) IBOutlet PullTableView *pullTableView;

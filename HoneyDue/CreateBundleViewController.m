@@ -26,6 +26,8 @@
 @property (strong, nonatomic) NSMutableArray *noteArray;
 @property (strong, nonatomic) NSMutableArray *contactArray;
 @property (strong, nonatomic) NSDate *unformattedDueDate;
+@property (strong, nonatomic) NSString *contactType;
+@property (strong, nonatomic) NSMutableArray *receiverEmails;
 
 @end
 
@@ -52,6 +54,9 @@
 @synthesize noteArray;
 @synthesize unformattedDueDate;
 @synthesize contactArray;
+@synthesize receiverBtn;
+@synthesize contactType;
+@synthesize receiverEmails;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -98,6 +103,7 @@
     tableDataSourceArray = [[NSMutableArray alloc] init];
     reminderArray = [[NSMutableArray alloc] init];
     noteArray = [[NSMutableArray alloc] init];
+    receiverEmails = [[NSMutableArray alloc] init];
 }
 
 - (void)dismissKeyboard:(id)sender {
@@ -116,7 +122,7 @@
 
 - (IBAction)send:(id)sender {
     if (receiverTextField.text.length == 0) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert" message:@"Please fill in the receiver's name." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert" message:@"Please select a receiver from your contacts." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
     } else if (msgTextView.text.length == 0) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert" message:@"Please fill in the message you want to send." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -129,7 +135,8 @@
         
         PFQuery *query = [PFUser query];
         query.limit = 1000;
-        [query whereKey:@"displayName" equalTo:receiverTextField.text];
+        //[query whereKey:@"displayName" equalTo:receiverTextField.text];
+        [query whereKey:@"email" containedIn:receiverEmails];
         [query countObjectsInBackgroundWithBlock:^(int number, NSError *error) {
             [self.spinner stopAnimating];
             // use the number
@@ -178,46 +185,14 @@
 
 // Using this action we will allow the user to have access to device contacts.
 - (IBAction)contactClicked:(id)sender {
+    contactType = @"contact";
     if ([msgTextView isFirstResponder]) {
         [msgTextView resignFirstResponder];
     }
     if ([assetsTableView isHidden]) {
         [assetsTableView setHidden:NO];
     }
-    //[self performSegueWithIdentifier:@"AddContact" sender:self];
-    // Init the contacts object.
-    contacts = [[ABPeoplePickerNavigationController alloc] init];
-    
-    // Set the delegate.
-	[contacts setPeoplePickerDelegate:self];
-    
-    // Set the e-mail property as the only one that we want to be displayed in the Address Book.
-	//[contacts setDisplayedProperties:[NSArray arrayWithObject:[NSNumber numberWithInt:kABPersonEmailProperty]]];
-    NSArray *displayedItems = [NSArray arrayWithObjects:[NSNumber numberWithInt:kABPersonPhoneProperty],
-                               [NSNumber numberWithInt:kABPersonEmailProperty],
-                               [NSNumber numberWithInt:kABPersonSocialProfileProperty], nil];
-    contacts.displayedProperties = displayedItems;
-    
-    /*
-     kABPersonBirthdayProperty
-     kABPersonCreationDateProperty
-     kABPersonDepartmentProperty
-     kABPersonFirstNamePhoneticProperty
-     kABPersonFirstNameProperty
-     kABPersonJobTitleProperty
-     kABPersonLastNamePhoneticProperty
-     kABPersonLastNameProperty
-     kABPersonMiddleNamePhoneticProperty
-     kABPersonMiddleNameProperty
-     kABPersonModificationDateProperty
-     kABPersonNicknameProperty
-     kABPersonNoteProperty
-     kABPersonOrganizationProperty
-     kABPersonPrefixProperty
-     kABPersonSuffixProperty
-     kABPersonPhoneProperty
-     */
-    
+        
     // Preparation complete. Display the contacts view controller.
     [self presentViewController:contacts animated:YES completion:^{}];
 }
@@ -230,6 +205,24 @@
     alert.alertViewStyle = UIAlertViewStylePlainTextInput;
     alert.tag = 1001;
     [alert show];
+}
+
+- (IBAction)selectReceiver:(id)sender {
+    contactType = @"receiver";
+    // Init the contacts object.
+    contacts = [[ABPeoplePickerNavigationController alloc] init];
+    
+    // Set the delegate.
+	[contacts setPeoplePickerDelegate:self];
+    
+    // Set the e-mail property as the only one that we want to be displayed in the Address Book.
+	//[contacts setDisplayedProperties:[NSArray arrayWithObject:[NSNumber numberWithInt:kABPersonEmailProperty]]];
+    NSArray *displayedItems = [NSArray arrayWithObjects:[NSNumber numberWithInt:kABPersonPhoneProperty],
+                               [NSNumber numberWithInt:kABPersonEmailProperty],
+                               [NSNumber numberWithInt:kABPersonSocialProfileProperty], nil];
+    contacts.displayedProperties = displayedItems;
+    // Preparation complete. Display the contacts view controller.
+    [self presentViewController:contacts animated:YES completion:^{}];
 }
 
 - (void)setContactAndNoteEnable {
@@ -298,6 +291,7 @@
 - (void)clearContent {
     receiverTextField.text = @"";
     msgTextView.text = @"";
+    [receiverBtn setTitle:@"Who is this for?" forState:UIControlStateNormal];
     //[assetsScrollView setHidden:YES];
     [introImageView setHidden:NO];
     [assetsTableView setHidden:YES];
@@ -366,6 +360,7 @@
     [self setDateBtn:nil];
     [self setDueDateView:nil];
     [self setDueDateLabel:nil];
+    [self setReceiverBtn:nil];
     [super viewDidUnload];
 }
 
@@ -494,18 +489,32 @@
         fullName = [fullName stringByAppendingString:@" "];
         fullName = [fullName stringByAppendingString:lastName];
     }
-    
-    //Transfer contact into nsdata
     NSMutableArray *people = [NSMutableArray arrayWithObject:(__bridge id)(person)];
-    NSData *vCard = (__bridge NSData*)ABPersonCreateVCardRepresentationWithPeople((__bridge CFArrayRef) people);
-    NSString *vCardString = [[NSString alloc] initWithData:vCard encoding:NSUTF8StringEncoding];
-    NSLog(@"vCard > %@", vCardString);
-    NSDictionary *contactDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:fullName, @"name", vCard, @"vcard", vCardString, @"vcardstring", @"contact", @"type", [NSNumber numberWithBool:NO], @"accepted", nil];
-    [contactArray addObject:contactDictionary];
+    if ([contactType isEqualToString:@"contact"]) {
+        //Transfer contact into nsdata
+        NSData *vCard = (__bridge NSData*)ABPersonCreateVCardRepresentationWithPeople((__bridge CFArrayRef) people);
+        NSString *vCardString = [[NSString alloc] initWithData:vCard encoding:NSUTF8StringEncoding];
+        NSLog(@"vCard > %@", vCardString);
+        NSDictionary *contactDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:fullName, @"name", vCard, @"vcard", vCardString, @"vcardstring", @"contact", @"type", [NSNumber numberWithBool:NO], @"accepted", nil];
+        [contactArray addObject:contactDictionary];
+        
+        NSDictionary *nameDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:fullName, @"name", @"contact", @"type", [NSNumber numberWithBool:NO], @"accepted", nil];
+        [tableDataSourceArray addObject:nameDictionary];
+        [assetsTableView reloadData];
+    } else if ([contactType isEqualToString:@"receiver"]) {
+        [receiverBtn setTitle:fullName forState:UIControlStateNormal];
+        receiverTextField.text = fullName;
+        ABMultiValueRef emails = ABRecordCopyValue(person, kABPersonEmailProperty);
+        if (ABMultiValueGetCount(emails) != 0) {
+            for (CFIndex i = 0; i < ABMultiValueGetCount(emails); i++) {
+                NSString *email = (__bridge_transfer NSString*) ABMultiValueCopyValueAtIndex(emails, i);
+                NSLog(@"email %@", email);
+                [receiverEmails addObject:email];
+                NSLog(@"ccount %d", receiverEmails.count);
+            }
+        }
+    }
     
-    NSDictionary *nameDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:fullName, @"name", @"contact", @"type", [NSNumber numberWithBool:NO], @"accepted", nil];
-    [tableDataSourceArray addObject:nameDictionary];
-    [assetsTableView reloadData];
     [contacts dismissViewControllerAnimated:YES completion:^{}];
     return NO;
 }

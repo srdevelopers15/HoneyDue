@@ -17,6 +17,8 @@
 
 @implementation LoginViewController
 
+@synthesize oAuthLoginView;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -35,10 +37,10 @@
         // Push the next view controller without animation
         [self performSegueWithIdentifier:@"GoToHomePage" sender:self];
     }
-//    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
-//    [standardUserDefaults setObject:@"Harry Wang" forKey:@"user_name"];
-//    [standardUserDefaults setObject:@"" forKey:@"user_picture_url"];
-//    [self performSegueWithIdentifier:@"GoToHomePage" sender:self];
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    [standardUserDefaults setObject:@"Harry Wang" forKey:@"user_name"];
+    [standardUserDefaults setObject:@"" forKey:@"user_picture_url"];
+    [self performSegueWithIdentifier:@"GoToHomePage" sender:self];
 }
 
 - (void)didReceiveMemoryWarning
@@ -84,8 +86,18 @@
 }
 
 - (IBAction)signInWithLI:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [self performSegueWithIdentifier:@"GoToHomePage" sender:self];
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//    [self performSegueWithIdentifier:@"GoToHomePage" sender:self];
+    oAuthLoginView = [[OAuthLoginView alloc] initWithNibName:nil bundle:nil];
+    [oAuthLoginView retain];
+    
+    // register to be told when the login is finished
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(loginViewDidFinish:)
+                                                 name:@"loginViewDidFinish"
+                                               object:oAuthLoginView];
+    
+    [self presentModalViewController:oAuthLoginView animated:YES];
 }
 
 - (void)requestAndSaveFBUserInfo {
@@ -163,5 +175,144 @@
         [standardUserDefaults setObject:url forKey:@"user_picture_url"];
     [standardUserDefaults setObject:email forKey:@"email"];
         [standardUserDefaults synchronize];
+}
+
+#pragma mark LinkedIn OAuth delegate
+
+-(void) loginViewDidFinish:(NSNotification*)notification
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    // We're going to do these calls serially just for easy code reading.
+    // They can be done asynchronously
+    // Get the profile, then the network updates
+    [self profileApiCall];
+	
+}
+
+- (void)profileApiCall
+{
+    NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~:(id,first-name,last-name,email-address,picture-url)"];
+    OAMutableURLRequest *request =
+    [[OAMutableURLRequest alloc] initWithURL:url
+                                    consumer:oAuthLoginView.consumer
+                                       token:oAuthLoginView.accessToken
+                                    callback:nil
+                           signatureProvider:nil];
+    
+    [request setValue:@"json" forHTTPHeaderField:@"x-li-format"];
+    
+    OADataFetcher *fetcher = [[OADataFetcher alloc] init];
+    [fetcher fetchDataWithRequest:request
+                         delegate:self
+                didFinishSelector:@selector(profileApiCallResult:didFinish:)
+                  didFailSelector:@selector(profileApiCallResult:didFail:)];
+    [request release]; 
+    
+}
+
+- (void)profileApiCallResult:(OAServiceTicket *)ticket didFinish:(NSData *)data
+{
+    NSString *responseBody = [[NSString alloc] initWithData:data
+                                                   encoding:NSUTF8StringEncoding];
+    
+    NSDictionary *profile = [responseBody objectFromJSONString];
+    [responseBody release];
+    
+    if ( profile )
+    {
+//        name.text = [[NSString alloc] initWithFormat:@"%@ %@",
+//                     [profile objectForKey:@"firstName"], [profile objectForKey:@"lastName"]];
+//        headline.text = [profile objectForKey:@"headline"];
+        
+        NSString *firstName = [profile objectForKey:@"firstName"];
+        NSString *lastName = [profile objectForKey:@"lastName"];
+        NSString *picUrl = [profile objectForKey:@"picture-url"];
+        NSString *userId = [profile objectForKey:@"id"];
+        NSString *email = [profile objectForKey:@"email-address"];
+        NSLog(@"linkedin first name: %@, last name: %@, id: %@, url: %@, email: %@", firstName, lastName, userId, picUrl, email);
+    }
+    
+    // The next thing we want to do is call the network updates
+    [self networkApiCall];
+    
+}
+
+- (void)profileApiCallResult:(OAServiceTicket *)ticket didFail:(NSData *)error
+{
+    NSLog(@"%@",[error description]);
+}
+
+- (void)networkApiCall
+{
+    NSURL *url = [NSURL URLWithString:@"http://api.linkedin.com/v1/people/~/network/updates?scope=self&count=1&type=STAT"];
+    OAMutableURLRequest *request =
+    [[OAMutableURLRequest alloc] initWithURL:url
+                                    consumer:oAuthLoginView.consumer
+                                       token:oAuthLoginView.accessToken
+                                    callback:nil
+                           signatureProvider:nil];
+    
+    [request setValue:@"json" forHTTPHeaderField:@"x-li-format"];
+    
+    OADataFetcher *fetcher = [[OADataFetcher alloc] init];
+    [fetcher fetchDataWithRequest:request
+                         delegate:self
+                didFinishSelector:@selector(networkApiCallResult:didFinish:)
+                  didFailSelector:@selector(networkApiCallResult:didFail:)];
+    [request release];
+    
+}
+
+- (void)networkApiCallResult:(OAServiceTicket *)ticket didFinish:(NSData *)data
+{
+    NSString *responseBody = [[NSString alloc] initWithData:data
+                                                   encoding:NSUTF8StringEncoding];
+    
+    NSDictionary *person = [[[[[responseBody objectFromJSONString]
+                               objectForKey:@"values"]
+                              objectAtIndex:0]
+                             objectForKey:@"updateContent"]
+                            objectForKey:@"person"];
+    
+    [responseBody release];
+    
+//    if ( [person objectForKey:@"currentStatus"] )
+//    {
+//        [postButton setHidden:false];
+//        [postButtonLabel setHidden:false];
+//        [statusTextView setHidden:false];
+//        [updateStatusLabel setHidden:false];
+//        status.text = [person objectForKey:@"currentStatus"];
+//    } else {
+//        [postButton setHidden:false];
+//        [postButtonLabel setHidden:false];
+//        [statusTextView setHidden:false];
+//        [updateStatusLabel setHidden:false];
+//        status.text = [[[[person objectForKey:@"personActivities"]
+//                         objectForKey:@"values"]
+//                        objectAtIndex:0]
+//                       objectForKey:@"body"];
+//        
+//    }
+    
+    [self dismissModalViewControllerAnimated:YES];
+}
+
+- (void)networkApiCallResult:(OAServiceTicket *)ticket didFail:(NSData *)error
+{
+    NSLog(@"%@",[error description]);
+}
+
+- (void)postUpdateApiCallResult:(OAServiceTicket *)ticket didFinish:(NSData *)data
+{
+    // The next thing we want to do is call the network updates
+    [self networkApiCall];
+    
+}
+
+- (void)postUpdateApiCallResult:(OAServiceTicket *)ticket didFail:(NSData *)error
+{
+    NSLog(@"%@",[error description]);
 }
 @end

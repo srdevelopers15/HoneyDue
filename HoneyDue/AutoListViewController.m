@@ -8,6 +8,7 @@
 
 #import "AutoListViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "AutoAcceptPersonsViewController.h"
 
 @interface AutoListViewController ()
 
@@ -18,7 +19,6 @@
 @synthesize doneBtn;
 @synthesize autoListTableView;
 @synthesize autoListArray;
-@synthesize contacts;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -40,7 +40,7 @@
     [autoListTableView.layer setCornerRadius:10.0f];
     [autoListTableView.layer setMasksToBounds:YES];
 
-    autoListArray = [[NSArray alloc] initWithObjects:@"Calendars", @"Tasks", @"Contacts", nil];
+    autoListArray = [[NSArray alloc] initWithObjects:@"Calendars", @"Reminders", @"Contacts", nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -88,92 +88,21 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)path {
-    // Init the contacts object.
-    contacts = [[ABPeoplePickerNavigationController alloc] init];
-    
-    // Set the delegate.
-	[contacts setPeoplePickerDelegate:self];
-    
-    // Set the e-mail property as the only one that we want to be displayed in the Address Book.
-	[contacts setDisplayedProperties:[NSArray arrayWithObject:[NSNumber numberWithInt:kABPersonEmailProperty]]];
-    
-    /*
-     kABPersonBirthdayProperty
-     kABPersonCreationDateProperty
-     kABPersonDepartmentProperty
-     kABPersonFirstNamePhoneticProperty
-     kABPersonFirstNameProperty
-     kABPersonJobTitleProperty
-     kABPersonLastNamePhoneticProperty
-     kABPersonLastNameProperty
-     kABPersonMiddleNamePhoneticProperty
-     kABPersonMiddleNameProperty
-     kABPersonModificationDateProperty
-     kABPersonNicknameProperty
-     kABPersonNoteProperty
-     kABPersonOrganizationProperty
-     kABPersonPrefixProperty
-     kABPersonSuffixProperty
-     kABPersonPhoneProperty
-     */
-    
-    // Preparation complete. Display the contacts view controller.
-	[self presentModalViewController:contacts animated:YES];
-}
-
-#pragma mark - AddressBook Delegate Methods
-
--(BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person{
-    return YES;
-}
-
-
--(BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier{
-    
-    // Get the first and the last name. Actually, copy their values using the person object and the appropriate
-    // properties into two string variables equivalently.
-    // Watch out the ABRecordCopyValue method below. Also, notice that we cast to NSString *.
-    NSString *firstName = (__bridge NSString *)ABRecordCopyValue(person, kABPersonFirstNameProperty);
-    NSString *lastName = (__bridge NSString *)ABRecordCopyValue(person, kABPersonLastNameProperty);
-    
-    // Compose the full name.
-    NSString *fullName = @"";
-    // Before adding the first and the last name in the fullName string make sure that these values are filled in.
-    if (firstName != nil) {
-        fullName = [fullName stringByAppendingString:firstName];
+    AutoAcceptPersonsViewController *sdv = [self.storyboard instantiateViewControllerWithIdentifier:@"AutoAcceptPersonsViewController"];
+    switch (path.row) {
+        case 0:
+            [sdv setTitleString:@"Calendars"];
+            break;
+        case 1:
+            [sdv setTitleString:@"Reminders"];
+            break;
+        case 2:
+            [sdv setTitleString:@"Contacts"];
+            break;
+        default:
+            [sdv setTitleString:@""];
+            break;
     }
-    if (lastName != nil) {
-        fullName = [fullName stringByAppendingString:@" "];
-        fullName = [fullName stringByAppendingString:lastName];
-    }
-    
-    
-    // Get the multivalue e-mail property.
-    CFTypeRef multivalue = ABRecordCopyValue(person, property);
-    
-    // Get the index of the selected e-mail. Remember that the e-mail multi-value property is being returned as an array.
-    CFIndex index = ABMultiValueGetIndexForIdentifier(multivalue, identifier);
-    
-    // Copy the e-mail value into a string.
-    NSString *email = (__bridge NSString *)ABMultiValueCopyValueAtIndex(multivalue, index);
-    
-    // Create a temp array in which we'll add all the desired values.
-    NSMutableArray *tempArray = [[NSMutableArray alloc] init];
-    [tempArray addObject:fullName];
-    
-    // Save the email into the tempArray array.
-    [tempArray addObject:email];
-    
-    
-    // Now add the tempArray into the contactsArray.
-    // Dismiss the contacts view controller.
-    [contacts dismissModalViewControllerAnimated:YES];
-	return NO;
-}
-
-
-// Implement this delegate method to make the Cancel button of the Address Book working.
--(void)peoplePickerNavigationControllerDidCancel:(ABPeoplePickerNavigationController *)peoplePicker{
-	[contacts dismissModalViewControllerAnimated:YES];
+    [self presentViewController:sdv animated:YES completion:^{}];
 }
 @end

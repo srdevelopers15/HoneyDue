@@ -7,10 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "OAuthLoginView.h"
+#import "JSONKit.h"
+#import "OAConsumer.h"
+#import "OAMutableURLRequest.h"
+#import "OADataFetcher.h"
+#import "OATokenManager.h"
 
 @interface LoginViewController : UIViewController
 - (IBAction)signInWithFB:(id)sender;
 - (IBAction)signInWithTW:(id)sender;
 - (IBAction)signInWithLI:(id)sender;
+
+- (void)profileApiCall;
+- (void)networkApiCall;
+
+@property (nonatomic, retain) OAuthLoginView *oAuthLoginView;
 
 @end
