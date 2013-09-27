@@ -37,10 +37,10 @@
         // Push the next view controller without animation
         [self performSegueWithIdentifier:@"GoToHomePage" sender:self];
     }
-    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
-    [standardUserDefaults setObject:@"Harry Wang" forKey:@"user_name"];
-    [standardUserDefaults setObject:@"" forKey:@"user_picture_url"];
-    [self performSegueWithIdentifier:@"GoToHomePage" sender:self];
+//    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+//    [standardUserDefaults setObject:@"Harry Wang" forKey:@"user_name"];
+//    [standardUserDefaults setObject:@"" forKey:@"user_picture_url"];
+//    [self performSegueWithIdentifier:@"GoToHomePage" sender:self];
 }
 
 - (void)didReceiveMemoryWarning

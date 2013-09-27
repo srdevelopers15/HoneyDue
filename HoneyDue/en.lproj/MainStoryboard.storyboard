@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="gEq-6v-drW">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12F37" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="gEq-6v-drW">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
@@ -181,11 +181,12 @@
                         <segue destination="uLs-q9-Ae1" kind="modal" identifier="GoToAutoList" id="aDD-ve-Tzf"/>
                         <segue destination="2Tp-KF-Vm2" kind="modal" identifier="UnlinkAccount" id="Jci-Cd-HWg"/>
                         <segue destination="1w9-hO-cTV" kind="modal" identifier="GoToProfile" id="fVa-1A-SuK"/>
+                        <segue destination="l9y-62-r6Y" kind="modal" identifier="GoToAutoReject" id="saH-i1-4ao"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V9l-sN-4RI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-139" y="-590"/>
+            <point key="canvasLocation" x="-163" y="-588"/>
         </scene>
         <!--Home View Controller-->
         <scene sceneID="5">
@@ -238,7 +239,7 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.42352941179999998" green="0.74509803919999995" blue="0.70588235290000001" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="125" sectionHeaderHeight="22" sectionFooterHeight="22" id="jGP-HF-Wfr" customClass="PullTableView">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" rowHeight="125" sectionHeaderHeight="22" sectionFooterHeight="22" id="jGP-HF-Wfr" customClass="PullTableView">
                                 <rect key="frame" x="0.0" y="50" width="320" height="469"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -605,6 +606,7 @@
                                         <connections>
                                             <action selector="back:" destination="uLs-q9-Ae1" eventType="touchUpInside" id="M3J-BJ-aPG"/>
                                             <action selector="back:" destination="Fcx-Yu-2Qu" eventType="touchUpInside" id="iVE-te-Py9"/>
+                                            <action selector="back:" destination="l9y-62-r6Y" eventType="touchUpInside" id="qqJ-o8-92a"/>
                                             <action selector="back:" destination="rin-dY-Bxq" eventType="touchUpInside" id="zdg-dR-YbE"/>
                                             <action selector="back:" destination="Xlm-gy-BuP" eventType="touchUpInside" id="znq-cZ-vKj"/>
                                         </connections>
@@ -628,6 +630,7 @@
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
+                                            <action selector="done:" destination="l9y-62-r6Y" eventType="touchUpInside" id="2XI-e1-xAJ"/>
                                             <action selector="done:" destination="rin-dY-Bxq" eventType="touchUpInside" id="8N1-ar-Zxv"/>
                                             <action selector="done:" destination="uLs-q9-Ae1" eventType="touchUpInside" id="RtQ-bC-Xte"/>
                                         </connections>
@@ -637,24 +640,32 @@
                             </view>
                             <stepper opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" id="YsZ-iL-aYs">
                                 <rect key="frame" x="113" y="166" width="94" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            </stepper>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="63B-v6-iR5">
-                                <rect key="frame" x="65" y="111" width="194" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Input your auto reject integer:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qMf-vp-bxl">
-                                <rect key="frame" x="20" y="58" width="257" height="21"/>
+                                <connections>
+                                    <action selector="autoRejectIntChanged:" destination="l9y-62-r6Y" eventType="valueChanged" id="1Yg-Os-Hht"/>
+                                </connections>
+                            </stepper>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Input your auto reject integer (1~7):" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qMf-vp-bxl">
+                                <rect key="frame" x="20" y="58" width="288" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="jxl-xM-V4C">
+                                <rect key="frame" x="139" y="111" width="42" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" red="0.80000000000000004" green="0.80000000000000004" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
+                    <connections>
+                        <outlet property="autoRejectIntLabel" destination="jxl-xM-V4C" id="41W-KF-sc6"/>
+                        <outlet property="autoRejectIntStepper" destination="YsZ-iL-aYs" id="HXO-Yq-ydb"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jsf-FC-ySh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1366,6 +1377,13 @@
         </class>
         <class className="AutoRejectViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/AutoRejectViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="autoRejectIntChanged:"/>
+                <relationship kind="action" name="back:"/>
+                <relationship kind="action" name="done:"/>
+                <relationship kind="outlet" name="autoRejectIntLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="autoRejectIntStepper" candidateClass="UIStepper"/>
+            </relationships>
         </class>
         <class className="CreateBundleViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/CreateBundleViewController.h"/>

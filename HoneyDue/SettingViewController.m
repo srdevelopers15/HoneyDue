@@ -143,9 +143,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)path {
     if (path.section == 0) {
-        if (path.row == 1 || path.row == 2) {
+        if (path.row == 1) {
             [self performSegueWithIdentifier:@"GoToAutoList" sender:self];
-        } else {
+        } else if (path.row == 2) {
+            [self performSegueWithIdentifier:@"GoToAutoReject" sender:self];
+        }else {
             [self performSegueWithIdentifier:@"UnlinkAccount" sender:self];
         }
     } else if (path.section == 1) {

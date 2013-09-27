@@ -104,6 +104,19 @@
     reminderArray = [[NSMutableArray alloc] init];
     noteArray = [[NSMutableArray alloc] init];
     receiverEmails = [[NSMutableArray alloc] init];
+    
+    // Init the contacts object.
+    contacts = [[ABPeoplePickerNavigationController alloc] init];
+    
+    // Set the delegate.
+	[contacts setPeoplePickerDelegate:self];
+    
+    // Set the e-mail property as the only one that we want to be displayed in the Address Book.
+	//[contacts setDisplayedProperties:[NSArray arrayWithObject:[NSNumber numberWithInt:kABPersonEmailProperty]]];
+    NSArray *displayedItems = [NSArray arrayWithObjects:[NSNumber numberWithInt:kABPersonPhoneProperty],
+                               [NSNumber numberWithInt:kABPersonEmailProperty],
+                               [NSNumber numberWithInt:kABPersonSocialProfileProperty], nil];
+    contacts.displayedProperties = displayedItems;
 }
 
 - (void)dismissKeyboard:(id)sender {
@@ -209,18 +222,6 @@
 
 - (IBAction)selectReceiver:(id)sender {
     contactType = @"receiver";
-    // Init the contacts object.
-    contacts = [[ABPeoplePickerNavigationController alloc] init];
-    
-    // Set the delegate.
-	[contacts setPeoplePickerDelegate:self];
-    
-    // Set the e-mail property as the only one that we want to be displayed in the Address Book.
-	//[contacts setDisplayedProperties:[NSArray arrayWithObject:[NSNumber numberWithInt:kABPersonEmailProperty]]];
-    NSArray *displayedItems = [NSArray arrayWithObjects:[NSNumber numberWithInt:kABPersonPhoneProperty],
-                               [NSNumber numberWithInt:kABPersonEmailProperty],
-                               [NSNumber numberWithInt:kABPersonSocialProfileProperty], nil];
-    contacts.displayedProperties = displayedItems;
     // Preparation complete. Display the contacts view controller.
     [self presentViewController:contacts animated:YES completion:^{}];
 }
@@ -572,7 +573,8 @@
         [cell.typeImageView setImage:image];
     }
     NSString *name = [dictionary objectForKey:@"name"];
-    cell.cellLabel.text = [@"   " stringByAppendingString:name];
+    //cell.cellLabel.text = [@"   " stringByAppendingString:name];
+    cell.cellTextField.delegate = self;
     cell.deleteBtn.tag = indexPath.row;
     [cell.deleteBtn addTarget:self action:@selector(deleteAssetByIndex:) forControlEvents:UIControlEventTouchUpInside];
     return cell;

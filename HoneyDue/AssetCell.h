@@ -11,7 +11,7 @@
 @interface AssetCell : UITableViewCell
 @property (strong, nonatomic) IBOutlet UIView *stuffsView;
 @property (strong, nonatomic) IBOutlet UIImageView *typeImageView;
-@property (strong, nonatomic) IBOutlet UILabel *cellLabel;
 @property (strong, nonatomic) IBOutlet UIButton *deleteBtn;
+@property (strong, nonatomic) IBOutlet UITextField *cellTextField;
 
 @end
